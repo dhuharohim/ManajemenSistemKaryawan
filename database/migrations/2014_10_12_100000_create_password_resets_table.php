@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class EmploymentsEidToPayrolls extends Migration
+class CreatePasswordResetsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class EmploymentsEidToPayrolls extends Migration
      */
     public function up()
     {
-        Schema::table('payrolls', function (Blueprint $table) {
-            //
-            // $table->integer('employments_eid')->after('id');
+        Schema::create('password_resets', function (Blueprint $table) {
+            $table->string('email')->index();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
         });
     }
 
@@ -26,8 +27,6 @@ class EmploymentsEidToPayrolls extends Migration
      */
     public function down()
     {
-        Schema::table('payrolls', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('password_resets');
     }
 }

@@ -11,6 +11,7 @@ use Database\Seeders\MainAccountSeeder;
 use Database\Seeders\PaymentTermSeeder;
 use Database\Seeders\PriceCategorySeeder;
 use Database\Seeders\ProductCategorySeeder;
+use Database\Seeders\RoleSeeder;
 use Database\Seeders\SupplierCategorySeeder;
 use Database\Seeders\TransactionCodeSeeder;
 use Database\Seeders\UserSeeder;
@@ -27,6 +28,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
+            RoleSeeder::class,
             UserSeeder::class,
             AccountTypeSeeder::class,
             PaymentTermSeeder::class,

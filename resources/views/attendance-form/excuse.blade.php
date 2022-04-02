@@ -5,7 +5,7 @@
 
 @section('main-content')
 <a href="{{ route('attendance') }}" class="btn btn-sm btn-danger font-weight-bold mb-3">Back</a>
-<form action="{{ route('attendance-form.excuse.store') }}" method="post">
+<form action="{{ route('attendance-form.store') }}" method="post">
     @csrf
     <div class="card shadow mb-3">
         <div class="card-body">

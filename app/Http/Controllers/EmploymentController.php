@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Employment;
+use App\Models\MyBlobDocs;
 use App\Models\Payroll;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class EmploymentController extends Controller
@@ -17,9 +20,10 @@ class EmploymentController extends Controller
     public function index()
     {
         $datas = Employment::all();
+        
         return view('employment.index',['data'=>$datas]);
-
-        $workagr = DB::table('work_agreement_doc')->get();
+        
+        
 
     }
 
@@ -30,9 +34,14 @@ class EmploymentController extends Controller
      */
     public function create()
     {
-       return view('employment-form.upload');
+        $users = User::all();
+       return view('employment-form.upload',['users'=>$users]);
     }
-
+    public function createuser()
+    {
+        $users = User::all();
+       return view('employment-form.userupload',['users'=>$users]);
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -41,6 +50,13 @@ class EmploymentController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->work_agr_doc->extension());
+
+        $validated = $request->validate([
+            'eid' => 'required|unique:employments',
+            'id_nik' => 'required|unique:employments|max:16',
+        ]);
+
         $employment = new Employment;
         $employment->eid = $request->eid;
         $employment->email = $request->email;
@@ -71,16 +87,77 @@ class EmploymentController extends Controller
         $employment->marriage = $request->marriage;
         $employment->birthdate = $request->birthdate;
 
-        $employment->save();
 
-        if($request->hasFile('work_agr_doc')){
-            $file_name = $request->work_agr_doc->getClientOriginalName();
-            DB::table('work_agreement_doc')->insert([
-                'name_file'=>$request->work_agr_doc,
-            ]);
-        }        
+        $employment->save();
+        $myblob = new MyBlobDocs();
+        $myblob-> name = $request->work_agr_doc->getClientOriginalName();
+        $myblob-> mime = $request->work_agr_doc->extension();
+        $myblob-> data = base64_encode($request->work_agr_doc);
+        $myblob-> emp_eid = $employment->eid;
+        $myblob->save();
+
+
+              
         $datas = Employment::all();
         return view('employment.index',['data'=>$datas]);
+
+        
+
+    }
+    public function storeuser(Request $request)
+    {
+        // dd($request->work_agr_doc->extension());
+
+        $validated = $request->validate([
+            'eid' => 'required|unique:employments',
+            'id_nik' => 'required|unique:employments|max:16',
+        ]);
+
+        $employment = new Employment;
+        $employment->eid = $request->eid;
+        $employment->email = $request->email;
+        $employment->alt_email = $request->alt_email;
+        $employment->join = $request->join;
+        $employment->emp_type = $request->emp_type;
+        $employment->work_agr = $request->work_agr;
+        $employment->status = $request->status;
+        $employment->payment = $request->payment;
+        $employment->work_agr_type = $request->work_agree_type;
+        $employment->payment_type = $request->payment_type;
+        $employment->alt_date = $request->alt_date;
+        $employment->unit = $request->unit;
+        $employment->sub_unit = $request->sub_unit;
+        $employment->position = $request->position;
+        $employment->name = $request->name;
+        $employment->id_nik = $request->id_nik;
+        $employment->birthplace = $request->birthplace;
+        $employment->gender = $request->gender;
+        $employment->phone = $request->phone;
+        $employment->religion = $request->religion;
+        $employment->province = $request->province;
+        $employment->city = $request->city;
+        $employment->sub = $request->sub;
+        $employment->zip = $request->zip;
+        $employment->address = $request->address;
+        $employment->npwp = $request->npwp;
+        $employment->marriage = $request->marriage;
+        $employment->birthdate = $request->birthdate;
+
+
+        $employment->save();
+        $myblob = new MyBlobDocs();
+        $myblob-> name = $request->work_agr_doc->getClientOriginalName();
+        $myblob-> mime = $request->work_agr_doc->extension();
+        $myblob-> data = base64_encode($request->work_agr_doc);
+        $myblob-> emp_eid = $employment->eid;
+        $myblob->save();
+
+
+              
+        $datas = Employment::all();
+        return view('employment.user',['data'=>$datas]);
+
+        
 
     }
 
@@ -98,13 +175,22 @@ class EmploymentController extends Controller
     public function info($id)
     {
         $employment = Employment::where('eid',$id)->first();
+        $blob = MyBlobDocs::where('emp_eid',$id)->first();
         $payroll= Payroll::all();
-        return view('employment-form.info',['data'=>$employment ,'payroll'=>$payroll]);
+        return view('employment-form.info',['data'=>$employment ,'payroll'=>$payroll, 'blob'=>$blob]);
     }
 
+    public function infouser($id){
+        $employment = Employment::where('eid',$id)->first();
+        $blob = MyBlobDocs::where('emp_eid',$id)->first();
+        $payroll= Payroll::all();
+        return view('employment-form.userinfo',['data'=>$employment ,'payroll'=>$payroll, 'blob'=>$blob]);
+    }
+    
     public function formpayroll($id){
         $payroll = Employment::select('eid')->where('eid',$id)->first();
         return view('payroll-form.index',['payroll'=>$payroll]);
+        
     }
 
     public function sendpayroll(Request $request){
@@ -115,7 +201,7 @@ class EmploymentController extends Controller
         $payroll->save();
 
         // $payroll = Payroll::all();
-        return redirect()->back();
+        return redirect()->route('employment-form.info',$request->eid);
     }
     /**
      * Show the form for editing the specified resource.
@@ -125,9 +211,21 @@ class EmploymentController extends Controller
      */
     public function edit($id)
     {
-        
+        $blob = MyBlobDocs::where('emp_eid',$id)->first();
         $employment = Employment::where('eid',$id)->first();
-        return view('employment-form.update',['data'=>$employment]);
+        return view('employment-form.update',['data'=>$employment, 'blob'=>$blob]);
+    }
+    public function edituser($id)
+    {
+        $blob = MyBlobDocs::where('emp_eid',$id)->first();
+        $employment = Employment::where('eid',$id)->first();
+        return view('employment-form.userupdate',['data'=>$employment, 'blob'=>$blob]);
+    }
+
+    public function indexuser(){
+        $datas = Employment::all();
+        
+        return view('employment.user',['data'=>$datas]);
     }
 
     /**
@@ -170,8 +268,59 @@ class EmploymentController extends Controller
         $employment->birthdate = $request->birthdate;
         $employment->save();
 
+        // $myblob = new MyBlobDocs();
+        // $myblob-> name = $request->work_agr_doc->getClientOriginalName();
+        // $myblob-> mime = $request->work_agr_doc->extension();
+        // $myblob-> data = base64_encode($request->work_agr_doc);
+        // $myblob-> emp_eid = $employment->eid;
+        // $myblob->save();
+
         $datas = Employment::all();
         return view('employment.index',['data'=>$datas]);
+        
+    }
+    public function updateuser(Request $request, $id)
+    {
+        $employment = Employment::where('eid',$id)->first();
+        $employment->eid = $request->eid;
+        $employment->email = $request->email;
+        $employment->alt_email = $request->alt_email;
+        $employment->join = $request->join;
+        $employment->emp_type = $request->emp_type;
+        $employment->work_agr = $request->work_agr;
+        $employment->status = $request->status;
+        $employment->payment = $request->payment;
+        $employment->work_agr_type = $request->work_agree_type;
+        $employment->payment_type = $request->payment_type;
+        $employment->alt_date = $request->alt_date;
+        $employment->unit = $request->unit;
+        $employment->sub_unit = $request->sub_unit;
+        $employment->position = $request->position;
+        $employment->name = $request->name;
+        $employment->id_nik = $request->id_nik;
+        $employment->birthplace = $request->birthplace;
+        $employment->gender = $request->gender;
+        $employment->phone = $request->phone;
+        $employment->religion = $request->religion;
+        $employment->province = $request->province;
+        $employment->city = $request->city;
+        $employment->sub = $request->sub;
+        $employment->zip = $request->zip;
+        $employment->address = $request->address;
+        $employment->npwp = $request->npwp;
+        $employment->marriage = $request->marriage;
+        $employment->birthdate = $request->birthdate;
+        $employment->save();
+
+        // $myblob = new MyBlobDocs();
+        // $myblob-> name = $request->work_agr_doc->getClientOriginalName();
+        // $myblob-> mime = $request->work_agr_doc->extension();
+        // $myblob-> data = base64_encode($request->work_agr_doc);
+        // $myblob-> emp_eid = $employment->eid;
+        // $myblob->save();
+
+        $datas = Employment::all();
+        return view('employment.user',['data'=>$datas]);
         
     }
 

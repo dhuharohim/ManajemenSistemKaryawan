@@ -106,22 +106,20 @@
         </li>
 
         {{-- Nav Item - Employment --}}
-        <li class="nav-item {{ Nav::isRoute('employment') }}">
-            <a class="nav-link" href="{{ route('employment') }}">
+        <li class="nav-item {{ Nav::isRoute('employment-user') }}">
+            <a class="nav-link" href="{{ route('employment-user') }}">
                 <i class="fas fa-fw fa-user"></i>
                 <span>{{ __('Employment') }}</span>
             </a>
         </li>
 
         {{-- Nav Item - Attendance --}}
-        <li class="nav-item {{ Nav::isRoute('attendance') }}">
-            <a class="nav-link" href="{{ route('attendance') }}">
+        <li class="nav-item {{ Nav::isRoute('attendance.user') }}">
+            <a class="nav-link" href="{{ route('attendance.user') }}">
                 <i class="fas fa-fw fa-user"></i>
-                <span>{{ __('Attendance & Excuses') }}</span>
+                <span>{{ __('Attendance') }}</span>
             </a>
         </li>
-
-        
 
 
         {{-- Divider --}}

@@ -1,0 +1,12 @@
+.effect1 {
+    box-shadow: 0 0 0 0 #FFF, 0 0 0 0 #27ae60, 0 0 0 0 #FFF, 0 0 0 0 #27ae60;
+}
+
+.effect1:hover {
+      border-color: #FFF;
+      box-shadow: 0 0 0 7px #FFF, 0 0 0 10px #27ae60, 0 0 0 17px #FFF, 0 0 0 20px #27ae60;
+    }
+    
+.effect1:active {
+      box-shadow: 0 0 0 15px #FFF, 0 0 0 18px #27ae60, 0 0 0 17px #FFF, 0 0 0 20px #27ae60;
+    }

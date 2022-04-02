@@ -26,7 +26,11 @@ Route::get('/', function () {
     return redirect(route('home'));
 });
 
+
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/user', [HomeController::class, 'user'])->name('user');
+
+
 
 Route::get('/profile', 'ProfileController@index')->name('profile');
 Route::put('/profile', 'ProfileController@update')->name('profile.update');
@@ -63,3 +67,19 @@ Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('
 
 Route::get('/form-payroll/{eid}',[EmploymentController::class, 'formpayroll'])->name('form.payroll');
 Route::post('form-payroll/store',[EmploymentController::class, 'sendpayroll'])->name('send.payroll');
+
+Route::get('/attendance-user',[AttendanceController::class, 'indexuser'])->name('attendance.user');
+Route::post('/attendance-user/store', [AttendanceController::class, 'storeuser'])->name('attendance-user.store');
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::post('/attendance-user/punchout', [AttendanceController::class, 'punchout'])->name('punchout');
+
+Route::get('/employment-user',[EmploymentController::class, 'indexuser'])->name('employment-user');
+
+Route::get('/employment-user/info/{eid}', [EmploymentController::class, 'infouser'])->name('employment-info.user');
+Route::post('/employment-user/update/{eid}', [EmploymentController::class, 'updateuser'])->name('employment-user.update');
+Route::get('/employment-user/edit/{eid}', [EmploymentController::class, 'edituser'])->name('employment-user.edit');
+Route::get('/employment-user/upload', [EmploymentController::class, 'createuser'])->name('employment-user.upload');
+
+Route::post('/employment-user/store', [EmploymentController::class, 'storeuser'])->name('employment-user.store');

@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.user')
 
 @section('title', 'Upload Employment Data')
 @section('heading', 'Upload Employment Data')
@@ -14,9 +14,9 @@
     </div>
 @endif
 <div class="mb-3">
-    <a href="{{ route('employment') }}" class="btn btn btn-secondary font-weight-bold mb-3">Back</a>
+    <a href="{{ route('employment-user') }}" class="btn btn btn-secondary font-weight-bold mb-3">Back</a>
 </div>
-<form enctype="multipart/form-data" action="{{ route('employment-form.store') }}" method="post">
+<form enctype="multipart/form-data" action="{{ route('employment-user.store') }}" method="post">
     
     <div class="row">
         <div class="col">

@@ -1,13 +1,13 @@
-@extends('layouts.admin')
+@extends('layouts.user')
 
 @section('title', 'Update Employment Data')
 @section('heading', 'Update Employment Data')
 
 @section('main-content')
     <div class="mb-3">
-        <a href="{{ route('employment') }}" class="btn btn-sm btn-danger font-weight-bold mb-3">Back</a>
+        <a href="{{ route('employment-user') }}" class="btn btn-sm btn-danger font-weight-bold mb-3">Back</a>
     </div>
-    <form action="{{ route('employment-form.update', ['eid' => $data->eid]) }}" method="post">
+    <form action="{{ route('employment-user.update', ['eid' => $data->eid]) }}" method="post">
         @csrf
         <div class="row">
             <div class="col">
@@ -196,8 +196,9 @@
                             <br><br>
                             <label class="font-weight-bold" for="phone">Phone Number</label><br>
                             <input value="{{ $data->phone }}" type="tel" name="phone" id="phone"
-                                placeholder="0822 9011 758" pattern="[0-9]{4} [0-9]{4} [0-9]{3}" maxlength="13"
+                                placeholder="081 236 7891" pattern="[0-9]{4} [0-9]{4} [0-9]{3}" maxlength="13"
                                 class="form-control" required />
+                    
                             <br>
                             <label class="font-weight-bold">Religion</label><br>
                             <select name="religion" required>
